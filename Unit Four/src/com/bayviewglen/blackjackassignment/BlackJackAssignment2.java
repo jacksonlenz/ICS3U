@@ -15,19 +15,19 @@ public class BlackJackAssignment2 {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-
 		double[] wallet = { 500.00 };
-		int[] bet = { 0 };
-		int[] playerScore = { 0 };
-		int[] dealerScore = { 0 };
 		boolean quit = false;
 
-		roduction();
+		introduction();
 
 		NameGet(scanner);
 
 		GetLocale(scanner, wallet);
 		while (!quit) {
+			int[] bet = { 0 };
+			int[] playerScore = { 0 };
+			int[] dealerScore = { 0 };
+
 			getBet(scanner, wallet, bet);
 
 			dealCard(suits, values, playerScore);
@@ -40,29 +40,8 @@ public class BlackJackAssignment2 {
 
 			dealerAi(dealerScore, suits, values);
 
-			getHit(scanner, wallet, bet, playerScore, dealerScore);
+			getHit(scanner, wallet, bet, playerScore, dealerScore, quit);
 
-			System.out.println("Would you like to play again?");
-			System.out.println("1. Yes 2. No");
-			boolean decision = false;
-			String yesOrNo = scanner.nextLine();
-			int[] finalQuit = { 0 };
-			while (!decision) {
-				try {
-					finalQuit[0] = Integer.parseInt(yesOrNo);
-				} catch (NumberFormatException ex) {
-
-				}
-				if (finalQuit[0] == 2) {
-					decision = true;
-					quit = true;
-				} else if (finalQuit[0] == 1) {
-					System.out.println("Next round!");
-					decision = true;
-				} else {
-					System.out.println("Please input 1 or 2.");
-				}
-			}
 		}
 	}
 
@@ -72,19 +51,18 @@ public class BlackJackAssignment2 {
 		}
 		if (dealerScore[0] > 21) {
 			System.out.println("The dealer has busted! You win!");
+
 		}
 
 	}
 
 	private static void getDealerCard(String[] cards, int[] values,
 			int[] dealerScore) {
-		int[] cardSuitint = { (int) (Math.random() * 4) };
-		String cardSuit = cards[cardSuitint[0]];
+		int cardValueInt = (int) (Math.random() * values.length);
+		
+		dealerScore[0] += values[cardValueInt];
 
-		int[] cardValueint = { (int) (Math.random() * 12) };
-		String faceValue = getSuit(values[cardValueint[0]]);
-		dealerScore[0] += values[cardValueint[0]];
-
+		
 		return;
 
 	}
@@ -125,31 +103,6 @@ public class BlackJackAssignment2 {
 		return;
 	}
 
-	private static void finalRequest(Scanner scanner, boolean quit) {
-		System.out.println("Would you like to play again?");
-		System.out.println("1. Yes 2. No");
-		boolean decision = false;
-		String yesOrNo = scanner.nextLine();
-		int[] finalQuit = { 0 };
-		while (!decision) {
-			try {
-				finalQuit[0] = Integer.parseInt(yesOrNo);
-			} catch (NumberFormatException ex) {
-
-			}
-			if (finalQuit[0] == 2) {
-				decision = true;
-				quit = true;
-			} else if (finalQuit[0] == 1) {
-				System.out.println("Next round!");
-				decision = true;
-			} else {
-				System.out.println("Please input 1 or 2.");
-			}
-		}
-		return;
-	}
-
 	public static String getSuit(int values2) {
 		values2 = values2 + 2;
 
@@ -169,7 +122,7 @@ public class BlackJackAssignment2 {
 	}
 
 	private static void doubleDown(double[] wallet, int[] bet,
-			int[] playerScore, int[] dealerScore) {
+			int[] playerScore, int[] dealerScore, Scanner scanner, boolean quit) {
 		if (wallet[0] >= bet[0]) {
 			bet[0] = bet[0] * 2;
 			wallet[0] -= bet[0];
@@ -180,30 +133,51 @@ public class BlackJackAssignment2 {
 				System.out.println("You have lost, loser!");
 			} else if (playerScore[0] > dealerScore[0])
 				;
+			finalRequest(scanner, quit);
 			System.out.println("YOU WIN! CONGRATULATIONS!");
-
+			finalRequest(scanner, quit);
 		}
 
 		return;
 	}
 
-	private static void youFold(int[] playerScore, int[] dealerScore) {
+	private static void finalRequest(Scanner scanner, boolean quit) {
+		System.out.println("Would you like to play again?");
+		System.out.println("1.Yes 2. No");
+		String yesOrNo = scanner.nextLine();
+		int[] oneOrTwo = {0};
+		try {
+			oneOrTwo[0] = Integer.parseInt(yesOrNo);
+		} catch (NumberFormatException ex) {
+			System.out.println("Please input 1 or 2");
+		}
+		if(oneOrTwo[0] == 1){
+			
+		}else if(oneOrTwo[0] == 2){
+			System.out.println("Thanks for playing!");
+			quit = true;
+		}
+		return;
+	}
+
+	private static void youFold(int[] playerScore, int[] dealerScore,
+			Scanner scanner, boolean quit) {
 		if (playerScore[0] >= dealerScore[0]) {
 			System.out.println("YOU ARE THE WINNER! CONGRATULATIONS!");
+			finalRequest(scanner, quit);
 		} else if (playerScore[0] <= dealerScore[0]) {
-
 			System.out.println("You have lost, loser!");
-
+			finalRequest(scanner, quit);
 		}
 		return;
 	}
 
 	private static void getHit(Scanner scanner, double[] wallet, int[] bet,
-			int[] playerScore, int[] dealerScore) {
+			int[] playerScore, int[] dealerScore, boolean quit) {
 		boolean decisionMade = false;
 		while (!decisionMade) {
 
-			int[] playerDecision = { 0 };
+			int[] playerDecision = {0};
 			System.out
 					.println("The first pair of cards is yours and the second pair is the dealer's.");
 			System.out.println("Would you like to: ");
@@ -240,10 +214,10 @@ public class BlackJackAssignment2 {
 
 				decisionMade = true;
 			} else if (playerDecision[0] == 2) {
-				youFold(playerScore, dealerScore);
+				youFold(playerScore, dealerScore, scanner, quit);
 				decisionMade = true;
 			} else if (playerDecision[0] == 3) {
-				doubleDown(wallet, bet, playerScore, dealerScore);
+				doubleDown(wallet, bet, playerScore, dealerScore, scanner, quit);
 				decisionMade = true;
 			} else {
 				System.out.println("Please input a CORRECT number: ");
@@ -369,7 +343,7 @@ public class BlackJackAssignment2 {
 		String PlayerName = scanner.nextLine();
 	}
 
-	private static void roduction() {
+	private static void introduction() {
 		System.out
 				.println("Hello player! Welcome to Blackjack! If you don't know how to play blackjack, you probably should look that up first.");
 
