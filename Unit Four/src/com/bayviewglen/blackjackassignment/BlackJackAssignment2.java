@@ -5,12 +5,13 @@ import java.util.Scanner;
 import java.text.NumberFormat;
 
 public class BlackJackAssignment2 {
-	static int KING = 10;
-	static int QUEEN = 10;
-	static int JACK = 10;
-	static int ACE = 11;
-	static String[] suits = { "H", "S", "C", "D" };
-	static int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, JACK, KING, QUEEN, ACE };
+	static final int KING = 10;
+	static final int QUEEN = 10;
+	static final int JACK = 10;
+	static final int ACE = 11;
+	static final String[] suits = { "H", "S", "C", "D" };
+	static final int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, JACK, KING, QUEEN,
+			ACE };
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
@@ -37,17 +38,37 @@ public class BlackJackAssignment2 {
 
 			dealHiddenDealerCard(suits, values, dealerScore);
 
-			dealerAi(dealerScore);
+			dealerAi(dealerScore, suits, values);
 
 			getHit(scanner, wallet, bet, playerScore, dealerScore);
 
-			finalRequest(scanner, quit);
+			System.out.println("Would you like to play again?");
+			System.out.println("1. Yes 2. No");
+			boolean decision = false;
+			String yesOrNo = scanner.nextLine();
+			int[] finalQuit = { 0 };
+			while (!decision) {
+				try {
+					finalQuit[0] = Integer.parseInt(yesOrNo);
+				} catch (NumberFormatException ex) {
+
+				}
+				if (finalQuit[0] == 2) {
+					decision = true;
+					quit = true;
+				} else if (finalQuit[0] == 1) {
+					System.out.println("Next round!");
+					decision = true;
+				} else {
+					System.out.println("Please input 1 or 2.");
+				}
+			}
 		}
 	}
 
-	private static void dealerAi(int[] dealerScore) {
+	private static void dealerAi(int[] dealerScore, String[] suits2, int[] suits) {
 		while (dealerScore[0] < 17) {
-			getDealerCard(suits, dealerScore, values);
+			getDealerCard(suits2, dealerScore, suits);
 		}
 		if (dealerScore[0] > 21) {
 			System.out.println("The dealer has busted! You win!");
@@ -106,12 +127,27 @@ public class BlackJackAssignment2 {
 
 	private static void finalRequest(Scanner scanner, boolean quit) {
 		System.out.println("Would you like to play again?");
+		System.out.println("1. Yes 2. No");
+		boolean decision = false;
 		String yesOrNo = scanner.nextLine();
-		if (yesOrNo.equals("y")) {
+		int[] finalQuit = { 0 };
+		while (!decision) {
+			try {
+				finalQuit[0] = Integer.parseInt(yesOrNo);
+			} catch (NumberFormatException ex) {
 
-		} else if (yesOrNo.equals("n")) {
-			quit = true;
+			}
+			if (finalQuit[0] == 2) {
+				decision = true;
+				quit = true;
+			} else if (finalQuit[0] == 1) {
+				System.out.println("Next round!");
+				decision = true;
+			} else {
+				System.out.println("Please input 1 or 2.");
+			}
 		}
+		return;
 	}
 
 	public static String getSuit(int values2) {
