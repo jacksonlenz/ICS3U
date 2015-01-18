@@ -14,11 +14,10 @@ public class BlackJackAssignment {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-		
 
 		double wallet = 500.00;
 		int bet = 0;
-		int playerScore = 15;
+		int playerScore = 0;
 		int dealerScore = 0;
 		boolean quit = false;
 
@@ -32,15 +31,13 @@ public class BlackJackAssignment {
 
 			getBet(scanner, wallet, bet);
 
-			dealCard(suits, values);
+			dealCard(suits, values, playerScore);
 
-			dealCard(suits, values);
+			dealCard(suits, values, playerScore);
 
-			displayDealerCards();
-
-			calculateDealerScore();
-
-			calculatePlayerScore();
+			dealDealerCard(suits, values, dealerScore);
+			
+			dealHiddenDealerCard(suits, values, dealerScore);
 
 			getHit(scanner, wallet, bet, playerScore, dealerScore);
 
@@ -50,16 +47,43 @@ public class BlackJackAssignment {
 
 	}
 
+	private static void dealHiddenDealerCard(String[] cards, int[] values,
+			int dealerScore) {
+		int cardSuitInt = (int) (Math.random() * 4);
+		String cardSuit = cards[cardSuitInt];
+
+		int cardValueInt = (int) (Math.random() * 12);
+		String faceValue = getSuit(values[cardValueInt]);
+		System.out.println("_______________________________");
+		System.out.println("");
+		System.out.println("xx");
+		System.out.println("");
+		System.out.println("_______________________________");
+		dealerScore += values[cardValueInt];
+		
+		return;
+		
+	}
+
+	private static void dealDealerCard(String[] cards, int[] values,
+			int dealerScore) {
+
+		int cardSuitInt = (int) (Math.random() * 4);
+		String cardSuit = cards[cardSuitInt];
+
+		int cardValueInt = (int) (Math.random() * 12);
+		String faceValue = getSuit(values[cardValueInt]);
+		System.out.println("_______________________________");
+		System.out.println("");
+		System.out.println(faceValue + cardSuit);
+		System.out.println("");
+		System.out.println("_______________________________");
+		dealerScore += values[cardValueInt];
+		
+		return;
+	}
+
 	private static void finalRequest() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void displayDealerCards() {
-
-	}
-
-	private static void calculateDealerScore() {
 
 	}
 
@@ -81,14 +105,10 @@ public class BlackJackAssignment {
 		return "" + index;
 	}
 
-	private static void calculatePlayerScore() {
-
-	}
-
 	private static void doubleDown(double wallet, int bet) {
 		if (wallet >= bet * 2) {
 			bet = bet * 2;
-			
+
 			System.out.println("You have " + wallet + " and your bet is now "
 					+ bet + ".");
 		}
@@ -112,6 +132,7 @@ public class BlackJackAssignment {
 		while (!decisionMade) {
 
 			int playerDecision = 0;
+			System.out.println("The first pair of cards is yours and the second pair is the dealer's.");
 			System.out.println("Would you like to: ");
 			System.out.println("");
 			System.out.println("1. Hit?");
@@ -132,7 +153,7 @@ public class BlackJackAssignment {
 			if (playerDecision < 1) {
 				System.out.println("Please input a CORRECT number: ");
 			} else if (playerDecision == 1) {
-				playOneCard();
+
 				decisionMade = true;
 			} else if (playerDecision == 2) {
 				youFold(playerScore, dealerScore);
@@ -144,20 +165,23 @@ public class BlackJackAssignment {
 				System.out.println("Please input a CORRECT number: ");
 			}
 		}
+		return;
 	}
 
-	private static void playOneCard() {
-		dealCard(suits, values);
-
-	}
-
-	private static void dealCard(String[] cards, int[] values) {
+	private static void dealCard(String[] cards, int[] values, int playerScore) {
 		int cardSuitInt = (int) (Math.random() * 4);
 		String cardSuit = cards[cardSuitInt];
 
 		int cardValueInt = (int) (Math.random() * 12);
 		String faceValue = getSuit(values[cardValueInt]);
+		System.out.println("_______________________________");
+		System.out.println("");
 		System.out.println(faceValue + cardSuit);
+		System.out.println("");
+		System.out.println("_______________________________");
+		playerScore += values[cardValueInt];
+		
+		return;
 	}
 
 	private static void getBet(Scanner scanner, double wallet, int bet) {
@@ -183,10 +207,11 @@ public class BlackJackAssignment {
 				wallet -= bet;
 				System.out.println("You now have " + wallet
 						+ " in your wallet.");
-				
+
 				betDone = true;
 			}
 		}
+		return;
 	}
 
 	private static Locale GetLocale(Scanner scanner, double wallet) {
